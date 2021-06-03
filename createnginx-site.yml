@@ -1,0 +1,72 @@
+---
+- name: Install NGINX, create site1
+  hosts: vm2
+  become: true
+  tasks:
+          - name: Pull an image NGINX
+            docker_image:
+                    name: nginx
+
+          - name: Create directory sites
+            file:
+                    path: "{{ item }}"
+                    state: directory
+            with_items:
+                    - /etc/site1
+                    - /etc/site2
+
+          - copy:
+                  src: ./sample/site1/index.html
+                  dest: /etc/site1/index.html
+          
+          - copy:
+                  src: ./sample/site1/Dockerfile
+                  dest: /etc/site1/Dockerfile
+
+          - copy:
+                  src: ./sample/site2/index.html
+                  dest: /etc/site2/index.html
+
+          - copy:
+                  src: ./sample/site2/Dockerfile
+                  dest: /etc/site2/Dockerfile
+
+          - name: Build docker image site1-nginx
+            docker_image:
+                    name: site1
+                    build:
+                            path: /etc/site1
+                    state: present
+
+          - name: Build docker image site2-nginx
+            docker_image:
+                    name: site2
+                    build:
+                            path: /etc/site2
+                    state: present
+
+          - name: Run Docker Container Site1
+            docker_container:
+                    name: site1
+                    image: site1
+                    state: started
+                    recreate: yes
+                    ports:
+                            - "81:80"
+
+          - name: Run Docker Container Site2 
+            docker_container:
+                    name: site2
+                    image: site2
+                    state: started
+                    recreate: yes
+                    ports:
+                            - "82:80"
+
+          - name: Delete file index.html
+            file:
+                    path: "{{ item }}"
+                    state: absent
+            with_items:
+                    - /etc/site1
+                    - /etc/site2
