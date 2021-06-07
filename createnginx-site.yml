@@ -84,6 +84,11 @@
                     name: docker-compose
                     state: present
 
+          - name: Create path for docker-compose
+            file:
+                    path: /etc/docker-db
+                    state: directory
+
           - name: Create path mount
             file:
                     path: /etc/postgres
