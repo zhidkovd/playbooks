@@ -1,0 +1,39 @@
+---
+- name: Import playbook site1-2
+  import_playbook: createnginx-site.yml
+- name: Install NGINX, create nginx balance
+  hosts: web
+  become: true
+  tasks:
+          - name: Install NGINX
+            docker_image:
+                    name: nginx
+
+          - name: Create directory balance
+            file:
+                    path: /etc/balance
+                    state: directory
+
+          - copy:
+                  src: ./nginx.conf
+                  dest: /etc/balance/nginx.conf
+
+          - copy:
+                  src: ./Dockerfile
+                  dest: /etc/balance/Dockerfile
+
+          - name: Build docker image balance
+            docker_image:
+                    name: balance
+                    build:
+                            path: /etc/balance
+                    state: present
+
+          - name: Run Docker Container balance
+            docker_container:
+                    name: balance
+                    image: balance
+                    state: started
+                    recreate: yes
+                    ports:
+                            - "80:80"
