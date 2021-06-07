@@ -1,6 +1,6 @@
 ---
 - name: Install NGINX, create site1
-  hosts: vm2
+  hosts: web
   become: true
   tasks:
           - name: Pull an image NGINX
@@ -70,3 +70,29 @@
             with_items:
                     - /etc/site1
                     - /etc/site2
+
+- name: Install DB
+  hosts: db
+  become: true
+  tasks:
+          - name: Ensure postgresql package is present
+            docker_image:
+                    name: postgres
+
+          - name: Install docker-compose
+            apt:
+                    name: docker-compose
+                    state: present
+
+          - name: Create path mount
+            file:
+                    path: /etc/postgres
+                    state: directory
+
+          - name: Copy file to remote host
+            copy:
+                    src: ./docker-compose.yml
+                    dest: /etc/docker-db
+      
+          - name: Run docker-compose
+            shell: "docker-compose -f /etc/docker-db/docker-compose.yml up"

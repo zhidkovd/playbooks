@@ -1,5 +1,5 @@
 ---
-- name: Install Docker in Local Machine
+- name: Install Docker, image NGINX in Local Machine 
   hosts: all
   become: true
   tasks:
@@ -17,8 +17,8 @@
             shell: 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -'
 
           - name: Add repository Docker
-            shell: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
-'
+            shell: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"'
+
           - name: Apt update
             apt:
                     update_cache: yes
@@ -30,6 +30,10 @@
 
           - name: Add zhidkovd in group docker
             shell: 'usermod -aG docker zhidkovd'
+
+          - name: Pull an image NGINX
+            docker_image:
+                    name: nginx
 
 
 
