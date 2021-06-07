@@ -31,10 +31,5 @@
           - name: Add zhidkovd in group docker
             shell: 'usermod -aG docker zhidkovd'
 
-          - name: Pull an image NGINX
-            docker_image:
-                    name: nginx
-
-
 
             
