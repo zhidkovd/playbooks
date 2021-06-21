@@ -1,6 +1,6 @@
 ---
 - name: Install NGINX, create site1
-  hosts: web
+  hosts: all
   become: true
   tasks:
           - name: Pull an image NGINX

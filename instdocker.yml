@@ -1,6 +1,6 @@
 ---
 - name: Install Docker, image NGINX in Local Machine 
-  hosts: all
+  hosts: vm2
   become: true
   tasks:
           - name: Install packages

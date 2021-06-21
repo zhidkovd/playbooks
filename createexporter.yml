@@ -1,0 +1,19 @@
+---
+- name: Create Exporter in VM1 and VM2
+  hosts: all
+  become: true
+  tasks:
+          - name: Create directory sites
+            file:
+                    path: "{{ item }}"
+                    state: directory
+            with_items:
+                    - /etc/exporter
+
+          - copy:
+                  src: ./docker-compose-exporter.yml
+                  dest: /etc/exporter/docker-compose-exporter.yml
+
+          - name: Ups Docker-Compose.yml
+            shell: 'docker-compose -f /etc/exporter/docker-compose-exporter.yml up -d'
+
