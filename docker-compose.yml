@@ -10,6 +10,8 @@ services:
     restart: always
     ports:
       - 9090:9090
+    depens_on:
+      - node-exporter
  
   grafana:
     image: grafana/grafana:latest
@@ -17,10 +19,13 @@ services:
     restart: always
     ports:
       - 3000:3000
+    depens_on:
+      - prometheus
+      - node-exporter
 
   node-exporter:
-    image: "prom/node-exporter"
-    container_name: "node-exporter"
+    image: prom/node-exporter
+    container_name: node-exporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
