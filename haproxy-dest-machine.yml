@@ -1,13 +1,13 @@
 ---
 - name: Import playbook site1-2
   import_playbook: createnginx-site.yml
-- name: Install NGINX, create nginx balance
+- name: Install HaProxy, create haproxy balance
   hosts: vm1
   become: true
   tasks:
-          - name: Install NGINX
+          - name: Install HAProxy
             docker_image:
-                    name: nginx
+                    name: haproxy
 
           - name: Create directory balance
             file:
@@ -15,16 +15,16 @@
                     state: directory
 
           - copy:
-                  src: ./nginx.conf
-                  dest: /etc/balance/nginx.conf
+                  src: ./haproxy
+                  dest: /etc/balance/haproxy
 
           - copy:
-                  src: ./Dockerfile
+                  src: ./Dockerfile-haproxy
                   dest: /etc/balance/Dockerfile
 
           - name: Build docker image balance
             docker_image:
-                    name: balance
+                    name: balance-haproxy
                     build:
                             path: /etc/balance
                     state: present

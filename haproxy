@@ -1,0 +1,18 @@
+frontend frontend
+    bind *:80
+    mode http
+    default_backend backend
+
+backend backend
+    balance roundrobin
+    mode http
+    server backend-server1 10.128.0.6:81 check
+    server backend-server2 10.128.0.6:82 check
+
+listen stats
+    bind :9000
+    stats enable
+    mode http
+    stats uri /stats
+    stats hide-version
+    stats realm Haproxy\ Statistics
